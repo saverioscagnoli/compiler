@@ -1,9 +1,17 @@
 package main
 
-import "fmt"
+import (
+	"compiler/lexer"
+	"fmt"
+)
 
 func main() {
-	fmt.Println("Hello world!")
-	fmt.Println("Saverio")
-	fmt.Println("leone")
+	test := "var sdlfjsflx = 2323 + 3 * 4"
+	lexer := lexer.New(test)
+
+	tokens := lexer.Tokenize()
+
+	for _, token := range tokens {
+		fmt.Println(token)
+	}
 }
