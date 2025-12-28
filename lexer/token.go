@@ -1,111 +1,109 @@
 package lexer
 
-import (
-	"strings"
-	"unicode"
-)
-
 type TokenType string
 
 const (
-	Plus   TokenType = "PLUS"
-	Minus  TokenType = "MINUS"
-	Star   TokenType = "STAR"
-	Slash  TokenType = "SLASH"
+	// Operators
+	Plus       TokenType = "PLUS"
+	Minus      TokenType = "MINUS"
+	Star       TokenType = "STAR"
+	Slash      TokenType = "SLASH"
+	Modulo     TokenType = "MODULO"
+	Not        TokenType = "NOT"
+	And        TokenType = "AND"
+	Or         TokenType = "OR"
+	BitwiseAnd TokenType = "BITWISE_AND"
+	BitwiseOr  TokenType = "BITWISE_OR"
+
 	Assign TokenType = "ASSIGN"
-	LParen TokenType = "LPAREN"
-	RParen TokenType = "RPAREN"
-	Var    TokenType = "VAR"
+
+	// Delimiters
+	LParen  TokenType = "LPAREN"
+	RParen  TokenType = "RPAREN"
+	LSquare TokenType = "LSQUARE"
+	RSquare TokenType = "RSQUARE"
+	LBrace  TokenType = "LBRACE"
+	RBrace  TokenType = "RBRACE"
+	Comma   TokenType = "COMMA"
+	Dot     TokenType = "DOT"
+	Colon   TokenType = "COLON"
+
+	// Keywords
+	Var   TokenType = "VAR"
+	Const TokenType = "CONST"
+	If    TokenType = "IF"
+	Else  TokenType = "ELSE"
+	For   TokenType = "FOR"
+	While TokenType = "WHILE"
+
+	// Comparision
+	Equals         TokenType = "EQUALS"
+	NotEquals      TokenType = "NOT_EQUALS"
+	Greater        TokenType = "GREATER"
+	Less           TokenType = "LESS"
+	GreaterOrEqual TokenType = "GREATER_OR_EQUAL"
+	LessOrEqual    TokenType = "LESS_OR_EQUAL"
+
+	// Variable, types, etc
 	Ident  TokenType = "IDENT"
+	True   TokenType = "TRUE"
+	False  TokenType = "FALSE"
 	Int    TokenType = "INT"
+	Float  TokenType = "FLOAT"
+	String TokenType = "STRING"
+
+	// Function
+	Function TokenType = "FUNCTION"
+	Return   TokenType = "RETURN"
+
+	// Special tokens
+	Eof       TokenType = "EOF"
+	Semicolon TokenType = "Semicolon"
+	Illegal   TokenType = "ILLEGAL"
 )
+
+var STATIC_TOKENS = map[string]TokenType{
+	"+":      Plus,
+	"-":      Minus,
+	"*":      Star,
+	"/":      Slash,
+	"%":      Modulo,
+	"!":      Not,
+	"&":      BitwiseAnd,
+	"|":      BitwiseOr,
+	"=":      Assign,
+	"(":      LParen,
+	")":      RParen,
+	"[":      LSquare,
+	"]":      RSquare,
+	"{":      LBrace,
+	"}":      RBrace,
+	".":      Dot,
+	":":      Colon,
+	",":      Comma,
+	">":      Greater,
+	"<":      Less,
+	"var":    Var,
+	"const":  Const,
+	"if":     If,
+	"else":   Else,
+	"for":    For,
+	"while":  While,
+	"true":   True,
+	"false":  False,
+	"fn":     Function,
+	"return": Return,
+	";":      Semicolon,
+}
 
 type Token struct {
 	Type  TokenType
-	value string
+	Value string
 }
 
-func NewToken(t TokenType, value string) Token {
+func newToken(t TokenType, value string) Token {
 	return Token{
 		Type:  t,
-		value: value,
+		Value: value,
 	}
-}
-
-var STATIC_TOKENS = map[string]TokenType{
-	"+":   Plus,
-	"-":   Minus,
-	"*":   Star,
-	"/":   Slash,
-	"=":   Assign,
-	"(":   LParen,
-	")":   RParen,
-	"var": Var,
-}
-
-type Char struct {
-	Value    rune
-	IsLetter bool
-	IsNumber bool
-	IsSymbol bool
-	IsSpace  bool
-}
-
-func NewChar(value rune) Char {
-	return Char{
-		Value:    value,
-		IsLetter: unicode.IsLetter(value),
-		IsNumber: unicode.IsNumber(value),
-		IsSymbol: unicode.IsSymbol(value),
-		IsSpace:  unicode.IsSpace(value),
-	}
-}
-
-// Check if characters are semantically coherent
-// (e.g, letters with letters, numbers with numbers, symbols with symbols)
-func (c *Char) CompareType(other Char) bool {
-	return c.IsLetter == other.IsLetter && c.IsNumber == other.IsNumber && c.IsSymbol == other.IsSymbol
-}
-
-type Word struct {
-	Chars    []Char
-	IsNumber bool
-}
-
-func NewWord() Word {
-	return Word{
-		Chars:    []Char{},
-		IsNumber: true,
-	}
-}
-
-func (w *Word) AppendChar(ch Char) {
-	w.Chars = append(w.Chars, ch)
-}
-
-func (w *Word) Length() int {
-	return len(w.Chars)
-}
-
-func (w *Word) LastChar() Char {
-	if len(w.Chars) == 0 {
-		return Char{}
-	}
-
-	return w.Chars[len(w.Chars)-1]
-}
-
-func (w *Word) ToString() string {
-	var sb strings.Builder
-
-	for _, ch := range w.Chars {
-		sb.WriteRune(ch.Value)
-	}
-
-	return sb.String()
-}
-
-func (w *Word) Reset() {
-	w.Chars = []Char{}
-	w.IsNumber = true
 }
